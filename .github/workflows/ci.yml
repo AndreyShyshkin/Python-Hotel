@@ -16,3 +16,6 @@ jobs:
 
       - name: Запуск контейнеров через Docker Compose
         run: docker-compose up -d --build
+
+      - name: Ожидание готовности сервера
+        run: sleep 10
