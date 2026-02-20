@@ -19,3 +19,6 @@ jobs:
 
       - name: Ожидание готовности сервера
         run: sleep 10
+
+      - name: Запуск тестов (Pytest)
+        run: docker-compose exec -T web pytest
