@@ -20,9 +20,20 @@ jobs:
       - name: Очікування готовності сервера
         run: |
           echo "Waiting for web service to be ready..."
+          MAX_RETRIES=24  # 24 * 5s = 120 seconds max wait
+          attempt=0
           # Retry until Django system checks pass inside the web container
           until docker compose exec -T web python manage.py check; do
-            echo "Web service not ready yet, retrying in 5 seconds..."
+            attempt=$((attempt + 1))
+            if [ "$attempt" -ge "$MAX_RETRIES" ]; then
+              echo "Web service did not become ready after $((MAX_RETRIES * 5)) seconds. Dumping logs..."
+              echo "==== docker compose ps ===="
+              docker compose ps
+              echo "==== docker compose logs ===="
+              docker compose logs
+              exit 1
+            fi
+            echo "Web service not ready yet (attempt $attempt/$MAX_RETRIES), retrying in 5 seconds..."
             sleep 5
           done
           echo "Web service is ready."
