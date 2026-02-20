@@ -27,8 +27,7 @@ DEBUG = True
 
 # NOTE: This is suitable for local development only. Before deploying to production,
 # set ALLOWED_HOSTS to the list of valid host/domain names for this site.
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
