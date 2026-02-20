@@ -13,3 +13,6 @@ jobs:
     steps:
       - name: Загрузка кода (Checkout)
         uses: actions/checkout@v4
+
+      - name: Запуск контейнеров через Docker Compose
+        run: docker-compose up -d --build
