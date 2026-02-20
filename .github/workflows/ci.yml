@@ -11,14 +11,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Загрузка кода (Checkout)
+      - name: Завантаження кода (Checkout)
         uses: actions/checkout@v4
 
-      - name: Запуск контейнеров через Docker Compose
+      - name: Запуск контейнерів через Docker Compose
         run: docker-compose up -d --build
 
-      - name: Ожидание готовности сервера
+      - name: Очікування готовності сервера
         run: sleep 10
 
-      - name: Запуск тестов (Pytest)
+      - name: Запуск тестів (Pytest)
         run: docker-compose exec -T web pytest
