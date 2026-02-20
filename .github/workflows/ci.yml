@@ -21,7 +21,7 @@ jobs:
         run: |
           echo "Waiting for web service to be ready..."
           # Retry until Django system checks pass inside the web container
-          until dockercompose exec -T web python manage.py check; do
+          until docker compose exec -T web python manage.py check; do
             echo "Web service not ready yet, retrying in 5 seconds..."
             sleep 5
           done
