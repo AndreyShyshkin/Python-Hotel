@@ -9,3 +9,7 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+
+    steps:
+      - name: Загрузка кода (Checkout)
+        uses: actions/checkout@v4
