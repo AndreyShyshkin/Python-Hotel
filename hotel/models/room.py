@@ -12,12 +12,13 @@ class Room(models.Model):
         decimal_places=2,
         verbose_name="Ціна за ніч",
         validators=[MinValueValidator(Decimal('0.01'))],
+        db_index=True,
     )
     capacity = models.IntegerField(verbose_name="Місткість")
     image = models.ImageField(upload_to='rooms_images/', verbose_name="Фотографія")
-    is_available = models.BooleanField(default=True, verbose_name="Доступно для бронювання")
+    is_available = models.BooleanField(default=True, verbose_name="Доступно для бронювання", db_index=True)
     
-    category = models.ForeignKey(RoomCategory, on_delete=models.CASCADE, related_name='rooms', verbose_name="Категорія")
+    category = models.ForeignKey(RoomCategory, on_delete=models.CASCADE, related_name='rooms', verbose_name="Категорія", db_index=True)
     amenities = models.ManyToManyField(Amenity, related_name='rooms', verbose_name="Зручності")
 
     class Meta:
