@@ -5,6 +5,8 @@ class Amenity(models.Model):
 
     class Meta:
         app_label = 'hotel'
+        verbose_name = "Зручність"
+        verbose_name_plural = "Зручності"
 
     def __str__(self):
         return self.name

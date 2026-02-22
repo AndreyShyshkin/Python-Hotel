@@ -1,11 +1,18 @@
 from django.db import models
+from django.core.validators import MinValueValidator
+from decimal import Decimal
 from .room_category import RoomCategory
 from .amenity import Amenity
 
 class Room(models.Model):
     title = models.CharField(max_length=200, verbose_name="Назва або номер")
     description = models.TextField(verbose_name="Опис")
-    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Ціна за ніч")
+    price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        verbose_name="Ціна за ніч",
+        validators=[MinValueValidator(Decimal('0.01'))],
+    )
     capacity = models.IntegerField(verbose_name="Місткість")
     image = models.ImageField(upload_to='rooms_images/', verbose_name="Фотографія")
     is_available = models.BooleanField(default=True, verbose_name="Доступно для бронювання")
@@ -15,6 +22,8 @@ class Room(models.Model):
 
     class Meta:
         app_label = 'hotel'
+        verbose_name = "Кімната"
+        verbose_name_plural = "Кімнати"
 
     def __str__(self):
         return self.title

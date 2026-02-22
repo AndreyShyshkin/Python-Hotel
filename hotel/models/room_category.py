@@ -5,6 +5,8 @@ class RoomCategory(models.Model):
 
     class Meta:
         app_label = 'hotel'
+        verbose_name = "Категорія"
+        verbose_name_plural = "Категорії"
 
     def __str__(self):
         return self.name
