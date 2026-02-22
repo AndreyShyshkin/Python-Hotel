@@ -199,7 +199,72 @@
         </div>
 
 
+ <!-- No results -->
+        {% if not rooms %}
+        <div class="text-center py-5">
+          <svg width="64" height="64" class="text-muted mb-3"><use xlink:href="#search"></use></svg>
+          <h4 class="fw-normal">Номерів не знайдено</h4>
+          <p class="text-muted">Спробуйте змінити параметри фільтрів</p>
+          <a href="{% url 'room_list' %}" class="btn btn-primary btn-arrow">
+            <span>Скинути фільтри <svg width="16" height="16"><use xlink:href="#arrow-right"></use></svg></span>
+          </a>
+        </div>
+        {% else %}
 
+        <!-- Grid -->
+        <div class="row g-4" id="rooms-grid">
+          {% for room in rooms %}
+          <div class="col-md-6 col-xl-4 room-card">
+            <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden room-card-inner">
+              <div class="position-relative overflow-hidden room-img-wrap">
+                {% if room.image %}
+                <img src="{{ room.image.url }}" class="card-img-top room-img" alt="{{ room.title }}">
+                {% else %}
+                <img src="{% static 'images/room1.jpg' %}" class="card-img-top room-img" alt="{{ room.title }}">
+                {% endif %}
+                <span class="badge bg-primary position-absolute top-0 start-0 m-3 rounded-pill px-3">
+                  {{ room.category.name }}
+                </span>
+                {% if room.is_available %}
+                <span class="badge bg-success position-absolute top-0 end-0 m-3 rounded-pill px-3">Доступно</span>
+                {% else %}
+                <span class="badge bg-danger position-absolute top-0 end-0 m-3 rounded-pill px-3">Зайнято</span>
+                {% endif %}
+                <div class="room-overlay position-absolute inset-0 d-flex align-items-center justify-content-center">
+                  <a href="{% url 'room_detail' room.pk %}" class="btn btn-light rounded-pill px-4">Детальніше</a>
+                </div>
+              </div>
+              <div class="card-body p-4">
+                <h5 class="card-title mb-2 fw-semibold">{{ room.title }}</h5>
+                <p class="card-text text-muted small mb-3">{{ room.description|truncatechars:90 }}</p>
+                <div class="amenities d-flex flex-wrap gap-2 mb-3">
+                  {% for amenity in room.amenities.all|slice:":3" %}
+                  <span class="badge bg-secondary text-dark rounded-pill">{{ amenity.name }}</span>
+                  {% endfor %}
+                  {% if room.amenities.count > 3 %}
+                  <span class="badge bg-secondary text-dark rounded-pill">+{{ room.amenities.count|add:"-3" }}</span>
+                  {% endif %}
+                </div>
+                <div class="d-flex justify-content-between align-items-center border-top pt-3">
+                  <div>
+                    <span class="text-primary fw-bold fs-5">{{ room.price }} ₴</span>
+                    <span class="text-muted small"> / ніч</span>
+                  </div>
+                  <div class="text-muted small d-flex align-items-center gap-1">
+                    <svg width="14" height="14"><use xlink:href="#armchair"></use></svg> {{ room.capacity }} ос.
+                  </div>
+                </div>
+              </div>
+              <div class="card-footer bg-transparent border-0 px-4 pb-4 pt-0">
+                <a href="{% url 'room_detail' room.pk %}" class="btn btn-arrow {% if room.is_available %}btn-primary{% else %}btn-outline-secondary{% endif %} w-100">
+                  <span>{% if room.is_available %}Забронювати{% else %}Детальніше{% endif %} <svg width="16" height="16"><use xlink:href="#arrow-right"></use></svg></span>
+                </a>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div><!-- /rooms-grid -->
+        {% endif %}
       </div><!-- /col rooms -->
     </div><!-- /row -->
     </form>
