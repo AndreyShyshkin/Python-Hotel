@@ -23,6 +23,40 @@
   </div>
 </section>
 
+<!-- Catalog Body -->
+<section class="padding-large pt-5">
+  <div class="container-fluid padding-side">
+    <form method="get" action="{% url 'room_list' %}" id="filter-form">
+    <div class="row g-5">
+
+      <!-- ===================== SIDEBAR FILTERS ===================== -->
+      <aside class="col-lg-3" data-aos="fade-right">
+
+        <!-- Mobile toggle -->
+        <button class="btn btn-primary w-100 d-lg-none mb-3" type="button"
+                data-bs-toggle="collapse" data-bs-target="#filtersCollapse">
+          <svg width="16" height="16" class="me-2"><use xlink:href="#search"></use></svg>
+          Фільтри
+        </button>
+
+        <div class="collapse d-lg-block" id="filtersCollapse">
+          <div class="filter-box bg-secondary rounded-4 p-4 sticky-top" style="top: 100px;">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h5 class="mb-0 fw-semibold">Фільтри</h5>
+              <a href="{% url 'room_list' %}" class="btn btn-sm btn-outline-secondary rounded-pill">Скинути</a>
+            </div>
+
+                      </div><!-- /filter-box -->
+        </div>
+      </aside>
+
+
+    </div><!-- /row -->
+    </form>
+  </div>
+</section>
+
 
 
 {% endblock %}
