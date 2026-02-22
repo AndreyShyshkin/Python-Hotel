@@ -118,6 +118,20 @@
               </div>
             </div>
 
+            <!-- Amenities -->
+            <div class="mb-4">
+              <label class="form-label text-uppercase small fw-semibold">Зручності</label>
+              {% for amenity in amenities %}
+              <div class="form-check">
+                <input class="form-check-input filter-amenity" type="checkbox"
+                       name="amenities" value="{{ amenity.id }}" id="am-{{ amenity.id }}"
+                       onchange="this.form.submit()"
+                       {% if amenity.id|stringformat:'s' in filters.amenity_ids %}checked{% endif %}>
+                <label class="form-check-label" for="am-{{ amenity.id }}">{{ amenity.name }}</label>
+              </div>
+              {% endfor %}
+            </div>
+
 
      </div><!-- /filter-box -->
         </div>
