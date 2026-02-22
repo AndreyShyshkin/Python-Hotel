@@ -333,6 +333,43 @@
   }
 </style>
 
+<!-- Price slider live label (no filtering logic needed in JS) -->
+<script>
+(function () {
+  const minInput = document.getElementById('filter-price-min');
+  const maxInput = document.getElementById('filter-price-max');
+  const label    = document.getElementById('price-label');
+  const fill     = document.getElementById('price-range-fill');
+  const MAX = 15000;
+
+  function update() {
+    let lo = parseInt(minInput.value), hi = parseInt(maxInput.value);
+    if (lo > hi) [lo, hi] = [hi, lo];
+    label.textContent = lo.toLocaleString('uk-UA') + ' — ' + hi.toLocaleString('uk-UA') + ' ₴';
+    fill.style.left  = (lo / MAX * 100) + '%';
+    fill.style.width = ((hi - lo) / MAX * 100) + '%';
+  }
+
+  minInput.addEventListener('input', update);
+  maxInput.addEventListener('input', update);
+  update();
+
+  // View toggle
+  document.getElementById('view-grid').addEventListener('click', function () {
+    document.getElementById('rooms-grid').classList.remove('list-view');
+    this.classList.add('active');
+    document.getElementById('view-list').classList.remove('active');
+  });
+  document.getElementById('view-list').addEventListener('click', function () {
+    document.getElementById('rooms-grid').classList.add('list-view');
+    this.classList.add('active');
+    document.getElementById('view-grid').classList.remove('active');
+  });
+})();
+</script>
+
+
+
 {% endblock %}
 
 
