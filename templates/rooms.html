@@ -153,14 +153,14 @@
                                 <select class="form-select rounded-3" name="sort" onchange="this.form.submit()">
                                     <option value="" {% if not filters.sort %}selected{% endif %}>За замовчуванням
                                     </option>
-                                    <option value="price-asc" {% if filters.sort==
-                                    'price-asc'%}selected{% endif %}>Ціна: від нижчої</option>
-                                    <option value="price-desc" {% if filters.sort==
-                                    'price-desc' %}selected{% endif %}>Ціна: від вищої</option>
-                                    <option value="name-asc" {% if filters.sort==
-                                    'name-asc' %}selected{% endif %}>Назва: А–Я</option>
-                                    <option value="name-desc" {% if filters.sort==
-                                    'name-desc' %}selected{% endif %}>Назва: Я–А</option>
+                                    <option value="price-asc" {% if filters.sort == 'price-asc' %}selected{% endif %}>Ціна: від нижчої</option>
+                                    <option value="price-desc" {% if filters.sort == 'price-desc' %}selected{% endif %}>Ціна: від вищої</option>
+                                    <option value="name-asc" {% if filters.sort == 'name-asc' %}selected{% endif %}>Назва: А–Я</option>
+                                    <option value="name-desc" {% if filters.sort == 'name-desc' %}selected{% endif %}>Назва: Я–А</option>
+                                </select>
+                            </div>
+
+                            <!-- Apply button (search/price) -->
                                 </select>
                             </div>
 
