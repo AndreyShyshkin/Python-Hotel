@@ -5,370 +5,403 @@
 
 <!-- Page Hero -->
 <section class="catalog-hero py-5 bg-secondary">
-  <div class="container-fluid padding-side" data-aos="fade-up">
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
-      <div>
-        <h1 class="display-3 fw-normal mb-1">Каталог номерів</h1>
-        <nav aria-label="breadcrumb">
-          <ol class="breadcrumb mb-0">
-            <li class="breadcrumb-item"><a href="{% url 'home' %}">Головна</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Номери</li>
-          </ol>
-        </nav>
-      </div>
-      <p class="mt-3 mt-md-0 mb-0 text-muted">
-        Показано <strong>{{ total }}</strong> номер{% if total == 1 %}{% elif total >= 2 and total <= 4 %}и{% else %}ів{% endif %}
-      </p>
+    <div class="container-fluid padding-side" data-aos="fade-up">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
+            <div>
+                <h1 class="display-3 fw-normal mb-1">Каталог номерів</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item"><a href="{% url 'home' %}">Головна</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Номери</li>
+                    </ol>
+                </nav>
+            </div>
+            <p class="mt-3 mt-md-0 mb-0 text-muted">
+                Показано <strong>{{ total }}</strong> номер{% if total == 1 %}{% elif total >= 2 and total <= 4 %}и{%
+                else %}ів{% endif %}
+            </p>
+        </div>
     </div>
-  </div>
 </section>
 
 <!-- Catalog Body -->
 <section class="padding-large pt-5">
-  <div class="container-fluid padding-side">
-    <form method="get" action="{% url 'room_list' %}" id="filter-form">
-    <div class="row g-5">
+    <div class="container-fluid padding-side">
+        <form method="get" action="{% url 'room_list' %}" id="filter-form">
+            <div class="row g-5">
 
-      <!-- ===================== SIDEBAR FILTERS ===================== -->
-      <aside class="col-lg-3" data-aos="fade-right">
+                <!-- ===================== SIDEBAR FILTERS ===================== -->
+                <aside class="col-lg-3" data-aos="fade-right">
 
-        <!-- Mobile toggle -->
-        <button class="btn btn-primary w-100 d-lg-none mb-3" type="button"
-                data-bs-toggle="collapse" data-bs-target="#filtersCollapse">
-          <svg width="16" height="16" class="me-2"><use xlink:href="#search"></use></svg>
-          Фільтри
-        </button>
+                    <!-- Mobile toggle -->
+                    <button class="btn btn-primary w-100 d-lg-none mb-3" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#filtersCollapse">
+                        <svg width="16" height="16" class="me-2">
+                            <use xlink:href="#search"></use>
+                        </svg>
+                        Фільтри
+                    </button>
 
-        <div class="collapse d-lg-block" id="filtersCollapse">
-          <div class="filter-box bg-secondary rounded-4 p-4 sticky-top" style="top: 100px;">
+                    <div class="collapse d-lg-block" id="filtersCollapse">
+                        <div class="filter-box bg-secondary rounded-4 p-4 sticky-top" style="top: 100px;">
 
-            <div class="d-flex justify-content-between align-items-center mb-4">
-              <h5 class="mb-0 fw-semibold">Фільтри</h5>
-              <a href="{% url 'room_list' %}" class="btn btn-sm btn-outline-secondary rounded-pill">Скинути</a>
-            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h5 class="mb-0 fw-semibold">Фільтри</h5>
+                                <a href="{% url 'room_list' %}" class="btn btn-sm btn-outline-secondary rounded-pill">Скинути</a>
+                            </div>
 
-                 <!-- Search -->
-            <div class="mb-4">
-              <label class="form-label text-uppercase small fw-semibold">Пошук</label>
-              <div class="position-relative">
-                <input type="text" name="search" id="filter-search" class="form-control rounded-3 pe-5"
-                       placeholder="Назва номера…" value="{{ filters.search }}">
-                <svg class="position-absolute top-50 end-0 translate-middle-y me-3 text-muted"
-                     width="16" height="16"><use xlink:href="#search"></use></svg>
-              </div>
-            </div>
+                            <!-- Search -->
+                            <div class="mb-4">
+                                <label class="form-label text-uppercase small fw-semibold">Пошук</label>
+                                <div class="position-relative">
+                                    <input type="text" name="search" id="filter-search"
+                                           class="form-control rounded-3 pe-5"
+                                           placeholder="Назва номера…" value="{{ filters.search }}">
+                                    <svg class="position-absolute top-50 end-0 translate-middle-y me-3 text-muted"
+                                         width="16" height="16">
+                                        <use xlink:href="#search"></use>
+                                    </svg>
+                                </div>
+                            </div>
 
-  <!-- Category -->
-            <div class="mb-4">
-              <label class="form-label text-uppercase small fw-semibold">Категорія</label>
-              <div class="d-flex flex-wrap gap-2">
-                <button type="submit" name="category" value=""
-                        class="btn btn-sm filter-pill rounded-pill {% if not filters.category_id %}active{% endif %}">
-                  Всі
-                </button>
-                {% for cat in categories %}
-                <button type="submit" name="category" value="{{ cat.id }}"
-                        class="btn btn-sm filter-pill rounded-pill {% if filters.category_id == cat.id|stringformat:'s' %}active{% endif %}">
-                  {{ cat.name }}
-                </button>
-                {% endfor %}
-              </div>
-            </div>
+                            <!-- Category -->
+                            <div class="mb-4">
+                                <label class="form-label text-uppercase small fw-semibold">Категорія</label>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <button type="submit" name="category" value=""
+                                            class="btn btn-sm filter-pill rounded-pill {% if not filters.category_id %}active{% endif %}">
+                                        Всі
+                                    </button>
+                                    {% for cat in categories %}
+                                    <button type="submit" name="category" value="{{ cat.id }}"
+                                            class="btn btn-sm filter-pill rounded-pill {% if filters.category_id == cat.id|stringformat:'s' %}active{% endif %}">
+                                        {{ cat.name }}
+                                    </button>
+                                    {% endfor %}
+                                </div>
+                            </div>
 
-            <!-- Price Range -->
-            <div class="mb-4">
-              <label class="form-label text-uppercase small fw-semibold">
-                Ціна за ніч: <span class="text-primary fw-bold" id="price-label">
+                            <!-- Price Range -->
+                            <div class="mb-4">
+                                <label class="form-label text-uppercase small fw-semibold">
+                                    Ціна за ніч: <span class="text-primary fw-bold" id="price-label">
                   {{ filters.price_min }} — {{ filters.price_max }} ₴
                 </span>
-              </label>
-              <div class="price-slider-wrap position-relative mt-3 mb-2">
-                <div class="price-track rounded-pill bg-white position-relative" style="height:4px;">
-                  <div id="price-range-fill" class="position-absolute h-100 bg-primary rounded-pill"></div>
-                </div>
-                <input type="range" name="price_min" id="filter-price-min" class="price-range-input"
-                       min="0" max="15000" step="500" value="{{ filters.price_min }}">
-                <input type="range" name="price_max" id="filter-price-max" class="price-range-input"
-                       min="0" max="15000" step="500" value="{{ filters.price_max }}">
-              </div>
-              <div class="d-flex justify-content-between small text-muted"><span>0 ₴</span><span>15 000 ₴</span></div>
-            </div>
+                                </label>
+                                <div class="price-slider-wrap position-relative mt-3 mb-2">
+                                    <div class="price-track rounded-pill bg-white position-relative"
+                                         style="height:4px;">
+                                        <div id="price-range-fill"
+                                             class="position-absolute h-100 bg-primary rounded-pill"></div>
+                                    </div>
+                                    <input type="range" name="price_min" id="filter-price-min" class="price-range-input"
+                                           min="0" max="15000" step="500" value="{{ filters.price_min }}">
+                                    <input type="range" name="price_max" id="filter-price-max" class="price-range-input"
+                                           min="0" max="15000" step="500" value="{{ filters.price_max }}">
+                                </div>
+                                <div class="d-flex justify-content-between small text-muted"><span>0 ₴</span><span>15 000 ₴</span>
+                                </div>
+                            </div>
 
 
-            <!-- Capacity -->
-            <div class="mb-4">
-              <label class="form-label text-uppercase small fw-semibold">Місткість (осіб)</label>
-              <div class="d-flex flex-wrap gap-2">
-                {% for cap_val, cap_label in capacity_choices %}
-                <button type="submit" name="capacity" value="{{ cap_val }}"
-                        class="btn btn-sm filter-pill rounded-pill {% if filters.capacity == cap_val|stringformat:'s' or cap_val == 0 and not filters.capacity %}active{% endif %}">
-                  {{ cap_label }}
-                </button>
-                {% endfor %}
-              </div>
-            </div>
+                            <!-- Capacity -->
+                            <div class="mb-4">
+                                <label class="form-label text-uppercase small fw-semibold">Місткість (осіб)</label>
+                                <div class="d-flex flex-wrap gap-2">
+                                    {% for cap_val, cap_label in capacity_choices %}
+                                    <button type="submit" name="capacity" value="{{ cap_val }}"
+                                            class="btn btn-sm filter-pill rounded-pill {% if filters.capacity == cap_val|stringformat:'s' or cap_val == 0 and not filters.capacity %}active{% endif %}">
+                                        {{ cap_label }}
+                                    </button>
+                                    {% endfor %}
+                                </div>
+                            </div>
 
-            <!-- Availability -->
-            <div class="mb-4">
-              <label class="form-label text-uppercase small fw-semibold">Доступність</label>
-              <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" name="available" id="filter-available"
-                       onchange="this.form.submit()" {% if filters.available == 'on' %}checked{% endif %}>
-                <label class="form-check-label" for="filter-available">Тільки доступні</label>
-              </div>
-            </div>
+                            <!-- Availability -->
+                            <div class="mb-4">
+                                <label class="form-label text-uppercase small fw-semibold">Доступність</label>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" name="available"
+                                           id="filter-available"
+                                           onchange="this.form.submit()" {% if filters.available== 'on' %}checked{%
+                                    endif %}>
+                                    <label class="form-check-label" for="filter-available">Тільки доступні</label>
+                                </div>
+                            </div>
 
-            <!-- Amenities -->
-            <div class="mb-4">
-              <label class="form-label text-uppercase small fw-semibold">Зручності</label>
-              {% for amenity in amenities %}
-              <div class="form-check">
-                <input class="form-check-input filter-amenity" type="checkbox"
-                       name="amenities" value="{{ amenity.id }}" id="am-{{ amenity.id }}"
-                       onchange="this.form.submit()"
-                       {% if amenity.id|stringformat:'s' in filters.amenity_ids %}checked{% endif %}>
-                <label class="form-check-label" for="am-{{ amenity.id }}">{{ amenity.name }}</label>
-              </div>
-              {% endfor %}
-            </div>
-
-
-            <!-- Sort -->
-            <div class="mt-4">
-              <label class="form-label text-uppercase small fw-semibold">Сортування</label>
-              <select class="form-select rounded-3" name="sort" onchange="this.form.submit()">
-                <option value="" {% if not filters.sort %}selected{% endif %}>За замовчуванням</option>
-                <option value="price-asc"  {% if filters.sort == 'price-asc'%}selected{% endif %}>Ціна: від нижчої</option>
-                <option value="price-desc" {% if filters.sort == 'price-desc' %}selected{% endif %}>Ціна: від вищої</option>
-                <option value="name-asc"   {% if filters.sort == 'name-asc'   %}selected{% endif %}>Назва: А–Я</option>
-                <option value="name-desc"  {% if filters.sort == 'name-desc'  %}selected{% endif %}>Назва: Я–А</option>
-              </select>
-            </div>
-
-   <!-- Apply button (search/price) -->
-            <div class="d-grid mt-4">
-              <button type="submit" class="btn btn-arrow btn-primary">
-                <span>Застосувати <svg width="16" height="16"><use xlink:href="#arrow-right"></use></svg></span>
-              </button>
-            </div>
+                            <!-- Amenities -->
+                            <div class="mb-4">
+                                <label class="form-label text-uppercase small fw-semibold">Зручності</label>
+                                {% for amenity in amenities %}
+                                <div class="form-check">
+                                    <input class="form-check-input filter-amenity" type="checkbox"
+                                           name="amenities" value="{{ amenity.id }}" id="am-{{ amenity.id }}"
+                                           onchange="this.form.submit()"
+                                           {% if amenity.id|stringformat:'s' in filters.amenity_ids %}checked{% endif
+                                    %}>
+                                    <label class="form-check-label" for="am-{{ amenity.id }}">{{ amenity.name }}</label>
+                                </div>
+                                {% endfor %}
+                            </div>
 
 
-     </div><!-- /filter-box -->
-        </div>
-      </aside>
+                            <!-- Sort -->
+                            <div class="mt-4">
+                                <label class="form-label text-uppercase small fw-semibold">Сортування</label>
+                                <select class="form-select rounded-3" name="sort" onchange="this.form.submit()">
+                                    <option value="" {% if not filters.sort %}selected{% endif %}>За замовчуванням
+                                    </option>
+                                    <option value="price-asc" {% if filters.sort==
+                                    'price-asc'%}selected{% endif %}>Ціна: від нижчої</option>
+                                    <option value="price-desc" {% if filters.sort==
+                                    'price-desc' %}selected{% endif %}>Ціна: від вищої</option>
+                                    <option value="name-asc" {% if filters.sort==
+                                    'name-asc' %}selected{% endif %}>Назва: А–Я</option>
+                                    <option value="name-desc" {% if filters.sort==
+                                    'name-desc' %}selected{% endif %}>Назва: Я–А</option>
+                                </select>
+                            </div>
 
-<!-- ===================== ROOMS GRID ===================== -->
-      <div class="col-lg-9" data-aos="fade-left">
+                            <!-- Apply button (search/price) -->
+                            <div class="d-grid mt-4">
+                                <button type="submit" class="btn btn-arrow btn-primary">
+                                    <span>Застосувати <svg width="16" height="16"><use xlink:href="#arrow-right"></use></svg></span>
+                                </button>
+                            </div>
 
-        <!-- View toggle & active filters -->
-        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
-          <!-- Active filter tags -->
-          <div class="d-flex flex-wrap gap-2">
-            {% if filters.search %}
-            <span class="filter-tag">
+
+                        </div><!-- /filter-box -->
+                    </div>
+                </aside>
+
+                <!-- ===================== ROOMS GRID ===================== -->
+                <div class="col-lg-9" data-aos="fade-left">
+
+                    <!-- View toggle & active filters -->
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+                        <!-- Active filter tags -->
+                        <div class="d-flex flex-wrap gap-2">
+                            {% if filters.search %}
+                            <span class="filter-tag">
               Пошук: "{{ filters.search }}"
               <a href="?{{ qs_no_search }}" class="remove-tag">×</a>
             </span>
-            {% endif %}
-            {% if filters.category_id %}
-            <span class="filter-tag">
+                            {% endif %}
+                            {% if filters.category_id %}
+                            <span class="filter-tag">
               {% for cat in categories %}{% if cat.id|stringformat:'s' == filters.category_id %}{{ cat.name }}{% endif %}{% endfor %}
               <a href="?{{ qs_no_category }}" class="remove-tag">×</a>
             </span>
-            {% endif %}
-            {% if filters.available == 'on' %}
-            <span class="filter-tag">
+                            {% endif %}
+                            {% if filters.available == 'on' %}
+                            <span class="filter-tag">
               Тільки доступні
               <a href="?{{ qs_no_available }}" class="remove-tag">×</a>
             </span>
-            {% endif %}
-          </div>
-          <!-- View toggle -->
-          <div class="btn-group view-toggle" role="group">
-            <button type="button" class="btn btn-sm btn-outline-secondary active" id="view-grid" title="Сітка">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5zm8 0A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5zm-8 8A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5zm8 0A1.5 1.5 0 0 1 10.5 9h3A1.5 1.5 0 0 1 15 10.5v3A1.5 1.5 0 0 1 13.5 15h-3A1.5 1.5 0 0 1 9 13.5z"/>
-              </svg>
-            </button>
-            <button type="button" class="btn btn-sm btn-outline-secondary" id="view-list" title="Список">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
-              </svg>
-            </button>
-          </div>
-        </div>
+                            {% endif %}
+                        </div>
+                        <!-- View toggle -->
+                        <div class="btn-group view-toggle" role="group">
+                            <button type="button" class="btn btn-sm btn-outline-secondary active" id="view-grid"
+                                    title="Сітка">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                     viewBox="0 0 16 16">
+                                    <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5zm8 0A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5zm-8 8A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5zm8 0A1.5 1.5 0 0 1 10.5 9h3A1.5 1.5 0 0 1 15 10.5v3A1.5 1.5 0 0 1 13.5 15h-3A1.5 1.5 0 0 1 9 13.5z"/>
+                                </svg>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" id="view-list"
+                                    title="Список">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                     viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd"
+                                          d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
 
 
- <!-- No results -->
-        {% if not rooms %}
-        <div class="text-center py-5">
-          <svg width="64" height="64" class="text-muted mb-3"><use xlink:href="#search"></use></svg>
-          <h4 class="fw-normal">Номерів не знайдено</h4>
-          <p class="text-muted">Спробуйте змінити параметри фільтрів</p>
-          <a href="{% url 'room_list' %}" class="btn btn-primary btn-arrow">
-            <span>Скинути фільтри <svg width="16" height="16"><use xlink:href="#arrow-right"></use></svg></span>
-          </a>
-        </div>
-        {% else %}
+                    <!-- No results -->
+                    {% if not rooms %}
+                    <div class="text-center py-5">
+                        <svg width="64" height="64" class="text-muted mb-3">
+                            <use xlink:href="#search"></use>
+                        </svg>
+                        <h4 class="fw-normal">Номерів не знайдено</h4>
+                        <p class="text-muted">Спробуйте змінити параметри фільтрів</p>
+                        <a href="{% url 'room_list' %}" class="btn btn-primary btn-arrow">
+                            <span>Скинути фільтри <svg width="16" height="16"><use
+                                    xlink:href="#arrow-right"></use></svg></span>
+                        </a>
+                    </div>
+                    {% else %}
 
-        <!-- Grid -->
-        <div class="row g-4" id="rooms-grid">
-          {% for room in rooms %}
-          <div class="col-md-6 col-xl-4 room-card">
-            <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden room-card-inner">
-              <div class="position-relative overflow-hidden room-img-wrap">
-                {% if room.image %}
-                <img src="{{ room.image.url }}" class="card-img-top room-img" alt="{{ room.title }}">
-                {% else %}
-                <img src="{% static 'images/room1.jpg' %}" class="card-img-top room-img" alt="{{ room.title }}">
-                {% endif %}
-                <span class="badge bg-primary position-absolute top-0 start-0 m-3 rounded-pill px-3">
+                    <!-- Grid -->
+                    <div class="row g-4" id="rooms-grid">
+                        {% for room in rooms %}
+                        <div class="col-md-6 col-xl-4 room-card">
+                            <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden room-card-inner">
+                                <div class="position-relative overflow-hidden room-img-wrap">
+                                    {% if room.image %}
+                                    <img src="{{ room.image.url }}" class="card-img-top room-img"
+                                         alt="{{ room.title }}">
+                                    {% else %}
+                                    <img src="{% static 'images/room1.jpg' %}" class="card-img-top room-img"
+                                         alt="{{ room.title }}">
+                                    {% endif %}
+                                    <span class="badge bg-primary position-absolute top-0 start-0 m-3 rounded-pill px-3">
                   {{ room.category.name }}
                 </span>
-                {% if room.is_available %}
-                <span class="badge bg-success position-absolute top-0 end-0 m-3 rounded-pill px-3">Доступно</span>
-                {% else %}
-                <span class="badge bg-danger position-absolute top-0 end-0 m-3 rounded-pill px-3">Зайнято</span>
-                {% endif %}
-                <div class="room-overlay position-absolute inset-0 d-flex align-items-center justify-content-center">
-                  <a href="{% url 'room_detail' room.pk %}" class="btn btn-light rounded-pill px-4">Детальніше</a>
-                </div>
-              </div>
-              <div class="card-body p-4">
-                <h5 class="card-title mb-2 fw-semibold">{{ room.title }}</h5>
-                <p class="card-text text-muted small mb-3">{{ room.description|truncatechars:90 }}</p>
-                <div class="amenities d-flex flex-wrap gap-2 mb-3">
-                  {% for amenity in room.amenities.all|slice:":3" %}
-                  <span class="badge bg-secondary text-dark rounded-pill">{{ amenity.name }}</span>
-                  {% endfor %}
-                  {% if room.amenities.count > 3 %}
-                  <span class="badge bg-secondary text-dark rounded-pill">+{{ room.amenities.count|add:"-3" }}</span>
-                  {% endif %}
-                </div>
-                <div class="d-flex justify-content-between align-items-center border-top pt-3">
-                  <div>
-                    <span class="text-primary fw-bold fs-5">{{ room.price }} ₴</span>
-                    <span class="text-muted small"> / ніч</span>
-                  </div>
-                  <div class="text-muted small d-flex align-items-center gap-1">
-                    <svg width="14" height="14"><use xlink:href="#armchair"></use></svg> {{ room.capacity }} ос.
-                  </div>
-                </div>
-              </div>
-              <div class="card-footer bg-transparent border-0 px-4 pb-4 pt-0">
-                <a href="{% url 'room_detail' room.pk %}" class="btn btn-arrow {% if room.is_available %}btn-primary{% else %}btn-outline-secondary{% endif %} w-100">
-                  <span>{% if room.is_available %}Забронювати{% else %}Детальніше{% endif %} <svg width="16" height="16"><use xlink:href="#arrow-right"></use></svg></span>
-                </a>
-              </div>
-            </div>
-          </div>
-          {% endfor %}
-        </div><!-- /rooms-grid -->
-        {% endif %}
-      </div><!-- /col rooms -->
-    </div><!-- /row -->
-    </form>
-  </div>
+                                    {% if room.is_available %}
+                                    <span class="badge bg-success position-absolute top-0 end-0 m-3 rounded-pill px-3">Доступно</span>
+                                    {% else %}
+                                    <span class="badge bg-danger position-absolute top-0 end-0 m-3 rounded-pill px-3">Зайнято</span>
+                                    {% endif %}
+                                    <div class="room-overlay position-absolute inset-0 d-flex align-items-center justify-content-center">
+                                        <a href="{% url 'room_detail' room.pk %}"
+                                           class="btn btn-light rounded-pill px-4">Детальніше</a>
+                                    </div>
+                                </div>
+                                <div class="card-body p-4">
+                                    <h5 class="card-title mb-2 fw-semibold">{{ room.title }}</h5>
+                                    <p class="card-text text-muted small mb-3">{{ room.description|truncatechars:90
+                                        }}</p>
+                                    <div class="amenities d-flex flex-wrap gap-2 mb-3">
+                                        {% for amenity in room.amenities.all|slice:":3" %}
+                                        <span class="badge bg-secondary text-dark rounded-pill">{{ amenity.name }}</span>
+                                        {% endfor %}
+                                        {% if room.amenities.count > 3 %}
+                                        <span class="badge bg-secondary text-dark rounded-pill">+{{ room.amenities.count|add:"-3" }}</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center border-top pt-3">
+                                        <div>
+                                            <span class="text-primary fw-bold fs-5">{{ room.price }} ₴</span>
+                                            <span class="text-muted small"> / ніч</span>
+                                        </div>
+                                        <div class="text-muted small d-flex align-items-center gap-1">
+                                            <svg width="14" height="14">
+                                                <use xlink:href="#armchair"></use>
+                                            </svg>
+                                            {{ room.capacity }} ос.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer bg-transparent border-0 px-4 pb-4 pt-0">
+                                    <a href="{% url 'room_detail' room.pk %}"
+                                       class="btn btn-arrow {% if room.is_available %}btn-primary{% else %}btn-outline-secondary{% endif %} w-100">
+                                        <span>{% if room.is_available %}Забронювати{% else %}Детальніше{% endif %} <svg
+                                                width="16" height="16"><use
+                                                xlink:href="#arrow-right"></use></svg></span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div><!-- /rooms-grid -->
+                    {% endif %}
+                </div><!-- /col rooms -->
+            </div><!-- /row -->
+        </form>
+    </div>
 </section>
 
 <!-- Styles -->
 <style>
-  .catalog-hero { border-bottom: 1px solid var(--bs-gray-300); }
-  .room-img-wrap { height: 230px; }
-  .room-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
-  .room-card-inner:hover .room-img { transform: scale(1.06); }
-  .room-overlay {
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(26,26,26,0.45);
-    opacity: 0; transition: opacity 0.3s ease;
-  }
-  .room-card-inner:hover .room-overlay { opacity: 1; }
+    .catalog-hero { border-bottom: 1px solid var(--bs-gray-300); }
+    .room-img-wrap { height: 230px; }
+    .room-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+    .room-card-inner:hover .room-img { transform: scale(1.06); }
+    .room-overlay {
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(26,26,26,0.45);
+      opacity: 0; transition: opacity 0.3s ease;
+    }
+    .room-card-inner:hover .room-overlay { opacity: 1; }
 
-  .filter-pill {
-    border: 1px solid var(--bs-gray-300);
-    background: #fff; color: var(--dark-color); transition: all .2s;
-  }
-  .filter-pill:hover, .filter-pill.active {
-    background: var(--primary-color); border-color: var(--primary-color); color: #fff;
-  }
+    .filter-pill {
+      border: 1px solid var(--bs-gray-300);
+      background: #fff; color: var(--dark-color); transition: all .2s;
+    }
+    .filter-pill:hover, .filter-pill.active {
+      background: var(--primary-color); border-color: var(--primary-color); color: #fff;
+    }
 
-  .price-range-input {
-    position: absolute; top: -6px; left: 0;
-    width: 100%; height: 100%;
-    appearance: none; background: transparent; pointer-events: none;
-  }
-  .price-range-input::-webkit-slider-thumb {
-    appearance: none; width: 18px; height: 18px;
-    border-radius: 50%; background: var(--primary-color);
-    border: 2px solid #fff; box-shadow: 0 0 4px rgba(0,0,0,.25);
-    pointer-events: all; cursor: pointer;
-  }
-  .price-range-input::-moz-range-thumb {
-    width: 18px; height: 18px; border-radius: 50%;
-    background: var(--primary-color); border: 2px solid #fff;
-    pointer-events: all; cursor: pointer;
-  }
-  .price-track { width: 100%; }
+    .price-range-input {
+      position: absolute; top: -6px; left: 0;
+      width: 100%; height: 100%;
+      appearance: none; background: transparent; pointer-events: none;
+    }
+    .price-range-input::-webkit-slider-thumb {
+      appearance: none; width: 18px; height: 18px;
+      border-radius: 50%; background: var(--primary-color);
+      border: 2px solid #fff; box-shadow: 0 0 4px rgba(0,0,0,.25);
+      pointer-events: all; cursor: pointer;
+    }
+    .price-range-input::-moz-range-thumb {
+      width: 18px; height: 18px; border-radius: 50%;
+      background: var(--primary-color); border: 2px solid #fff;
+      pointer-events: all; cursor: pointer;
+    }
+    .price-track { width: 100%; }
 
-  .filter-tag {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: var(--bs-gray-100); border-radius: 20px;
-    padding: 4px 12px; font-size: 13px;
-  }
-  .filter-tag .remove-tag { cursor: pointer; font-size: 14px; line-height: 1; color: inherit; }
-  .filter-tag .remove-tag:hover { color: var(--primary-color); }
+    .filter-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--bs-gray-100); border-radius: 20px;
+      padding: 4px 12px; font-size: 13px;
+    }
+    .filter-tag .remove-tag { cursor: pointer; font-size: 14px; line-height: 1; color: inherit; }
+    .filter-tag .remove-tag:hover { color: var(--primary-color); }
 
-  #rooms-grid.list-view .room-card { width: 100% !important; flex: 0 0 100%; max-width: 100%; }
-  #rooms-grid.list-view .room-card-inner { flex-direction: row !important; display: flex !important; }
-  #rooms-grid.list-view .room-img-wrap { width: 280px; flex-shrink: 0; height: auto; }
-  #rooms-grid.list-view .card-body { flex: 1; }
+    #rooms-grid.list-view .room-card { width: 100% !important; flex: 0 0 100%; max-width: 100%; }
+    #rooms-grid.list-view .room-card-inner { flex-direction: row !important; display: flex !important; }
+    #rooms-grid.list-view .room-img-wrap { width: 280px; flex-shrink: 0; height: auto; }
+    #rooms-grid.list-view .card-body { flex: 1; }
 
-  .page-link { color: var(--dark-color); border-color: var(--bs-gray-300); }
-  .page-item.active .page-link { background: var(--primary-color); border-color: var(--primary-color); }
-  .page-link:hover { background: var(--bs-gray-100); color: var(--primary-color); }
+    .page-link { color: var(--dark-color); border-color: var(--bs-gray-300); }
+    .page-item.active .page-link { background: var(--primary-color); border-color: var(--primary-color); }
+    .page-link:hover { background: var(--bs-gray-100); color: var(--primary-color); }
 
-  @media (max-width: 991px) {
-    #rooms-grid.list-view .room-card-inner { flex-direction: column !important; }
-    #rooms-grid.list-view .room-img-wrap { width: 100%; height: 230px; }
-  }
+    @media (max-width: 991px) {
+      #rooms-grid.list-view .room-card-inner { flex-direction: column !important; }
+      #rooms-grid.list-view .room-img-wrap { width: 100%; height: 230px; }
+    }
 </style>
 
 <!-- Price slider live label (no filtering logic needed in JS) -->
 <script>
-(function () {
-  const minInput = document.getElementById('filter-price-min');
-  const maxInput = document.getElementById('filter-price-max');
-  const label    = document.getElementById('price-label');
-  const fill     = document.getElementById('price-range-fill');
-  const MAX = 15000;
+    (function () {
+      const minInput = document.getElementById('filter-price-min');
+      const maxInput = document.getElementById('filter-price-max');
+      const label    = document.getElementById('price-label');
+      const fill     = document.getElementById('price-range-fill');
+      const MAX = 15000;
 
-  function update() {
-    let lo = parseInt(minInput.value), hi = parseInt(maxInput.value);
-    if (lo > hi) [lo, hi] = [hi, lo];
-    label.textContent = lo.toLocaleString('uk-UA') + ' — ' + hi.toLocaleString('uk-UA') + ' ₴';
-    fill.style.left  = (lo / MAX * 100) + '%';
-    fill.style.width = ((hi - lo) / MAX * 100) + '%';
-  }
+      function update() {
+        let lo = parseInt(minInput.value), hi = parseInt(maxInput.value);
+        if (lo > hi) [lo, hi] = [hi, lo];
+        label.textContent = lo.toLocaleString('uk-UA') + ' — ' + hi.toLocaleString('uk-UA') + ' ₴';
+        fill.style.left  = (lo / MAX * 100) + '%';
+        fill.style.width = ((hi - lo) / MAX * 100) + '%';
+      }
 
-  minInput.addEventListener('input', update);
-  maxInput.addEventListener('input', update);
-  update();
+      minInput.addEventListener('input', update);
+      maxInput.addEventListener('input', update);
+      update();
 
-  // View toggle
-  document.getElementById('view-grid').addEventListener('click', function () {
-    document.getElementById('rooms-grid').classList.remove('list-view');
-    this.classList.add('active');
-    document.getElementById('view-list').classList.remove('active');
-  });
-  document.getElementById('view-list').addEventListener('click', function () {
-    document.getElementById('rooms-grid').classList.add('list-view');
-    this.classList.add('active');
-    document.getElementById('view-grid').classList.remove('active');
-  });
-})();
+      // View toggle
+      document.getElementById('view-grid').addEventListener('click', function () {
+        document.getElementById('rooms-grid').classList.remove('list-view');
+        this.classList.add('active');
+        document.getElementById('view-list').classList.remove('active');
+      });
+      document.getElementById('view-list').addEventListener('click', function () {
+        document.getElementById('rooms-grid').classList.add('list-view');
+        this.classList.add('active');
+        document.getElementById('view-grid').classList.remove('active');
+      });
+    })();
 </script>
-
-
 
 {% endblock %}
 
