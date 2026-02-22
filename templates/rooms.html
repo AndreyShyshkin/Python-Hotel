@@ -395,16 +395,23 @@
       update();
 
       // View toggle
-      document.getElementById('view-grid').addEventListener('click', function () {
-        document.getElementById('rooms-grid').classList.remove('list-view');
-        this.classList.add('active');
-        document.getElementById('view-list').classList.remove('active');
-      });
-      document.getElementById('view-list').addEventListener('click', function () {
-        document.getElementById('rooms-grid').classList.add('list-view');
-        this.classList.add('active');
-        document.getElementById('view-grid').classList.remove('active');
-      });
+      const viewGridBtn = document.getElementById('view-grid');
+      const viewListBtn = document.getElementById('view-list');
+      const roomsGrid   = document.getElementById('rooms-grid');
+
+      if (viewGridBtn && viewListBtn && roomsGrid) {
+        viewGridBtn.addEventListener('click', function () {
+          roomsGrid.classList.remove('list-view');
+          viewGridBtn.classList.add('active');
+          viewListBtn.classList.remove('active');
+        });
+
+        viewListBtn.addEventListener('click', function () {
+          roomsGrid.classList.add('list-view');
+          viewListBtn.classList.add('active');
+          viewGridBtn.classList.remove('active');
+        });
+      }
     })();
 </script>
 
