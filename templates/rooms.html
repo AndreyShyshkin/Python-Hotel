@@ -271,7 +271,67 @@
   </div>
 </section>
 
+<!-- Styles -->
+<style>
+  .catalog-hero { border-bottom: 1px solid var(--bs-gray-300); }
+  .room-img-wrap { height: 230px; }
+  .room-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+  .room-card-inner:hover .room-img { transform: scale(1.06); }
+  .room-overlay {
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(26,26,26,0.45);
+    opacity: 0; transition: opacity 0.3s ease;
+  }
+  .room-card-inner:hover .room-overlay { opacity: 1; }
 
+  .filter-pill {
+    border: 1px solid var(--bs-gray-300);
+    background: #fff; color: var(--dark-color); transition: all .2s;
+  }
+  .filter-pill:hover, .filter-pill.active {
+    background: var(--primary-color); border-color: var(--primary-color); color: #fff;
+  }
+
+  .price-range-input {
+    position: absolute; top: -6px; left: 0;
+    width: 100%; height: 100%;
+    appearance: none; background: transparent; pointer-events: none;
+  }
+  .price-range-input::-webkit-slider-thumb {
+    appearance: none; width: 18px; height: 18px;
+    border-radius: 50%; background: var(--primary-color);
+    border: 2px solid #fff; box-shadow: 0 0 4px rgba(0,0,0,.25);
+    pointer-events: all; cursor: pointer;
+  }
+  .price-range-input::-moz-range-thumb {
+    width: 18px; height: 18px; border-radius: 50%;
+    background: var(--primary-color); border: 2px solid #fff;
+    pointer-events: all; cursor: pointer;
+  }
+  .price-track { width: 100%; }
+
+  .filter-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--bs-gray-100); border-radius: 20px;
+    padding: 4px 12px; font-size: 13px;
+  }
+  .filter-tag .remove-tag { cursor: pointer; font-size: 14px; line-height: 1; color: inherit; }
+  .filter-tag .remove-tag:hover { color: var(--primary-color); }
+
+  #rooms-grid.list-view .room-card { width: 100% !important; flex: 0 0 100%; max-width: 100%; }
+  #rooms-grid.list-view .room-card-inner { flex-direction: row !important; display: flex !important; }
+  #rooms-grid.list-view .room-img-wrap { width: 280px; flex-shrink: 0; height: auto; }
+  #rooms-grid.list-view .card-body { flex: 1; }
+
+  .page-link { color: var(--dark-color); border-color: var(--bs-gray-300); }
+  .page-item.active .page-link { background: var(--primary-color); border-color: var(--primary-color); }
+  .page-link:hover { background: var(--bs-gray-100); color: var(--primary-color); }
+
+  @media (max-width: 991px) {
+    #rooms-grid.list-view .room-card-inner { flex-direction: column !important; }
+    #rooms-grid.list-view .room-img-wrap { width: 100%; height: 230px; }
+  }
+</style>
 
 {% endblock %}
 
