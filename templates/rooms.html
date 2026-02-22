@@ -17,8 +17,7 @@
                 </nav>
             </div>
             <p class="mt-3 mt-md-0 mb-0 text-muted">
-                Показано <strong>{{ total|default:0 }}</strong> номер{% if total == 1 %}{% elif total >= 2 and total <= 4 %}и{%
-                else %}ів{% endif %}
+                Показано <strong>{{ total|default:0 }}</strong> номер{% if total == 1 %}{% elif total >= 2 and total <= 4 %}и{% else %}ів{% endif %}
             </p>
         </div>
     </div>
