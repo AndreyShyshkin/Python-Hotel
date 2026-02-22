@@ -58,6 +58,22 @@
               </div>
             </div>
 
+  <!-- Category -->
+            <div class="mb-4">
+              <label class="form-label text-uppercase small fw-semibold">Категорія</label>
+              <div class="d-flex flex-wrap gap-2">
+                <button type="submit" name="category" value=""
+                        class="btn btn-sm filter-pill rounded-pill {% if not filters.category_id %}active{% endif %}">
+                  Всі
+                </button>
+                {% for cat in categories %}
+                <button type="submit" name="category" value="{{ cat.id }}"
+                        class="btn btn-sm filter-pill rounded-pill {% if filters.category_id == cat.id|stringformat:'s' %}active{% endif %}">
+                  {{ cat.name }}
+                </button>
+                {% endfor %}
+              </div>
+            </div>
 
 
      </div><!-- /filter-box -->
