@@ -93,6 +93,22 @@
               </div>
               <div class="d-flex justify-content-between small text-muted"><span>0 ₴</span><span>15 000 ₴</span></div>
             </div>
+
+
+            <!-- Capacity -->
+            <div class="mb-4">
+              <label class="form-label text-uppercase small fw-semibold">Місткість (осіб)</label>
+              <div class="d-flex flex-wrap gap-2">
+                {% for cap_val, cap_label in capacity_choices %}
+                <button type="submit" name="capacity" value="{{ cap_val }}"
+                        class="btn btn-sm filter-pill rounded-pill {% if filters.capacity == cap_val|stringformat:'s' or cap_val == 0 and not filters.capacity %}active{% endif %}">
+                  {{ cap_label }}
+                </button>
+                {% endfor %}
+              </div>
+            </div>
+
+
      </div><!-- /filter-box -->
         </div>
       </aside>
