@@ -107,10 +107,13 @@
                             <!-- Capacity -->
                             <div class="mb-4">
                                 <label class="form-label text-uppercase small fw-semibold">Місткість (осіб)</label>
+                                <!-- Persistent capacity value so it is submitted with all filter changes -->
+                                <input type="hidden" name="capacity" value="{{ filters.capacity|default_if_none:'' }}">
                                 <div class="d-flex flex-wrap gap-2">
                                     {% for cap_val, cap_label in capacity_choices %}
-                                    <button type="submit" name="capacity" value="{{ cap_val }}"
-                                            class="btn btn-sm filter-pill rounded-pill {% if filters.capacity == cap_val|stringformat:'s' or cap_val == 0 and not filters.capacity %}active{% endif %}">
+                                    <button type="button"
+                                            class="btn btn-sm filter-pill rounded-pill {% if filters.capacity == cap_val|stringformat:'s' or cap_val == 0 and not filters.capacity %}active{% endif %}"
+                                            onclick="var capInput = this.form.querySelector('input[name=&quot;capacity&quot;]'); capInput.value = {% if cap_val == 0 %}''{% else %}'{{ cap_val }}'{% endif %}; this.form.submit();">
                                         {{ cap_label }}
                                     </button>
                                     {% endfor %}
