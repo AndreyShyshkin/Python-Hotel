@@ -108,6 +108,16 @@
               </div>
             </div>
 
+            <!-- Availability -->
+            <div class="mb-4">
+              <label class="form-label text-uppercase small fw-semibold">Доступність</label>
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" name="available" id="filter-available"
+                       onchange="this.form.submit()" {% if filters.available == 'on' %}checked{% endif %}>
+                <label class="form-check-label" for="filter-available">Тільки доступні</label>
+              </div>
+            </div>
+
 
      </div><!-- /filter-box -->
         </div>
