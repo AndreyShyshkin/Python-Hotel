@@ -2,9 +2,9 @@ asgiref==3.11.1
 django==6.0.2
 iniconfig==2.3.0
 packaging==26.0
+pillow==12.1.1
 pluggy==1.6.0
 pygments==2.19.2
 pytest==9.0.2
 pytest-django==4.12.0
 sqlparse==0.5.5
-Pillow==10.4.0
