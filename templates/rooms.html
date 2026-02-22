@@ -160,8 +160,7 @@
                                     <input class="form-check-input filter-amenity" type="checkbox"
                                            name="amenities" value="{{ amenity.id }}" id="am-{{ amenity.id }}"
                                            onchange="this.form.submit()"
-                                           {% if amenity.id|stringformat:'s' in filters.amenity_ids %}checked{% endif
-                                    %}>
+                                           {% if amenity.id|stringformat:'s' in filters.amenity_ids %}checked{% endif %}>
                                     <label class="form-check-label" for="am-{{ amenity.id }}">{{ amenity.name }}</label>
                                 </div>
                                 {% endfor %}
@@ -181,9 +180,6 @@
                                 </select>
                             </div>
 
-                            <!-- Apply button (search/price) -->
-                                </select>
-                            </div>
 
                             <!-- Apply button (search/price) -->
                             <div class="d-grid mt-4">
