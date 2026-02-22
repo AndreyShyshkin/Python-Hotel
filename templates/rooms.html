@@ -67,18 +67,39 @@
                             <!-- Category -->
                             <div class="mb-4">
                                 <label class="form-label text-uppercase small fw-semibold">Категорія</label>
+                                <!-- Persistent category field so all submissions include current category -->
+                                <input type="hidden" name="category" id="category-input"
+                                       value="{{ filters.category_id|default_if_none:'' }}">
                                 <div class="d-flex flex-wrap gap-2">
-                                    <button type="submit" name="category" value=""
-                                            class="btn btn-sm filter-pill rounded-pill {% if not filters.category_id %}active{% endif %}">
+                                    <button type="button"
+                                            class="btn btn-sm filter-pill rounded-pill {% if not filters.category_id %}active{% endif %}"
+                                            onclick="setCategoryAndSubmit('')">
                                         Всі
                                     </button>
                                     {% for cat in categories %}
-                                    <button type="submit" name="category" value="{{ cat.id }}"
-                                            class="btn btn-sm filter-pill rounded-pill {% if filters.category_id == cat.id|stringformat:'s' %}active{% endif %}">
+                                    <button type="button"
+                                            class="btn btn-sm filter-pill rounded-pill {% if filters.category_id == cat.id|stringformat:'s' %}active{% endif %}"
+                                            onclick="setCategoryAndSubmit('{{ cat.id }}')">
                                         {{ cat.name }}
                                     </button>
                                     {% endfor %}
                                 </div>
+                                <script>
+                                    (function () {
+                                        function setCategoryAndSubmit(categoryId) {
+                                            var input = document.getElementById('category-input');
+                                            if (input) {
+                                                input.value = categoryId;
+                                            }
+                                            var form = document.getElementById('filter-form');
+                                            if (form) {
+                                                form.submit();
+                                            }
+                                        }
+                                        // Expose to inline handlers
+                                        window.setCategoryAndSubmit = setCategoryAndSubmit;
+                                    })();
+                                </script>
                             </div>
 
                             <!-- Price Range -->
