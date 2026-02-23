@@ -5,33 +5,40 @@ def home(request):
 
 def room_list(request):
     rooms = Room.objects.select_related('category').all()
-    
+
     
     search = request.GET.get('search', '').strip()
     category_id = request.GET.get('category', '')
-    
-   
-    if search:
-        rooms = rooms.filter(title__icontains=search)
-    if category_id:
-        rooms = rooms.filter(category_id=category_id)
-
-    
     price_min = request.GET.get('price_min', '')
     price_max = request.GET.get('price_max', '')
     capacity = request.GET.get('capacity', '')
+    available = request.GET.get('available', '') 
 
+   
+    if search:
+        rooms = rooms.filter(title__icontains=search)
+
+    if category_id:
+        rooms = rooms.filter(category_id=category_id)
+
+   
     if price_min:
         rooms = rooms.filter(price__gte=price_min)
+
     if price_max:
         rooms = rooms.filter(price__lte=price_max)
 
+    
     if capacity:
-        if capacity >= 4: 
+        cap = int(capacity) 
+        if cap >= 4:
             rooms = rooms.filter(capacity__gte=4)
         else:
-            rooms = rooms.filter(capacity=capacity)
-    
+            rooms = rooms.filter(capacity=cap)
+
+   
+    if available == 'on':
+        rooms = rooms.filter(is_available=True)
 
     context = {'rooms': rooms}
     return render(request, 'rooms.html', context)
