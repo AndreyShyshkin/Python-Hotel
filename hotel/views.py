@@ -4,11 +4,15 @@ def home(request):
     return render(request, 'index.html')
 
 def room_list(request):
-    rooms = Room.objects.all()
+    rooms = Room.objects.select_related('category').all() 
     search = request.GET.get('search', '').strip()
+    category_id = request.GET.get('category', '')
     
     if search:
-        rooms = rooms.filter(title__contains=search) 
+        rooms = rooms.filter(title__icontains=search) 
+
+    if category_id:
+        rooms = rooms.filter(category_id=category_id)
         
     context = {'rooms': rooms}
     return render(request, 'rooms.html', context)
