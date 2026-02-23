@@ -5,6 +5,11 @@ def home(request):
 
 def room_list(request):
     rooms = Room.objects.all()
+    search = request.GET.get('search', '').strip()
+    
+    if search:
+        rooms = rooms.filter(title__contains=search) 
+        
     context = {'rooms': rooms}
     return render(request, 'rooms.html', context)
 
