@@ -1,6 +1,10 @@
-from django.core.management.base import BaseCommand
+import shutil
+from pathlib import Path
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from hotel.models import Amenity, Room, RoomCategory
+
+STATIC_IMAGES_DIR = Path(settings.BASE_DIR) / 'static' / 'images'
 
 ROOMS_DATA = [
     {
@@ -105,6 +109,8 @@ class Command(BaseCommand):
             Amenity.objects.all().delete()
             self.stdout.write(self.style.WARNING('🗑  Existing data wiped.'))
             
+        media_dir = Path(settings.MEDIA_ROOT) / 'rooms_images'
+            
         category_objs = {}
         for name in ALL_CATEGORIES:
             obj, _ = RoomCategory.objects.get_or_create(name=name)
@@ -122,5 +128,14 @@ class Command(BaseCommand):
                     category=category_objs[data['category']],
                     image='' 
                 )
+            
+            src = STATIC_IMAGES_DIR / data['image_src']
+            dest_filename = f'seed_{data["image_src"]}'
+            dest = media_dir / dest_filename
+            if src.exists():
+                shutil.copy2(src, dest) 
+                image_field_value = f'rooms_images/{dest_filename}'
+            else:
+                image_field_value = ''
         self.stdout.write(self.style.SUCCESS('Rooms created successfully!'))
         
