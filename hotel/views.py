@@ -3,7 +3,22 @@ from .models import Room, RoomCategory, Amenity
 
 
 def home(request):
-    return render(request, 'index.html')
+    featured_rooms = (
+        Room.objects.select_related('category')
+        .prefetch_related('amenities')
+        .filter(is_available=True)
+        .order_by('price')[:5]
+    )
+    total_rooms      = Room.objects.count()
+    available_rooms  = Room.objects.filter(is_available=True).count()
+    total_categories = RoomCategory.objects.count()
+    context = {
+        'featured_rooms':   featured_rooms,
+        'total_rooms':       total_rooms,
+        'available_rooms':   available_rooms,
+        'total_categories':  total_categories,
+    }
+    return render(request, 'index.html', context)
 
 
 def room_list(request):
