@@ -8,5 +8,6 @@ def room_list(request):
     context = {'rooms': rooms}
     return render(request, 'rooms.html', context)
 
-def room_detail(request):
-    return render(request, 'room_detail.html')
+def room_detail(request, pk):
+    room = Room.objects.get(pk=pk) 
+    return render(request, 'room_detail.html', {'room': room})
