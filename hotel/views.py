@@ -93,5 +93,17 @@ def room_list(request):
 
 
 def room_detail(request, pk):
-    room = get_object_or_404(Room, pk=pk)
-    return render(request, 'room_detail.html', {'room': room})
+    room = get_object_or_404(
+        Room.objects.select_related('category').prefetch_related('amenities'),
+        pk=pk
+    )
+    similar_rooms = (
+        Room.objects.select_related('category')
+        .filter(category=room.category)
+        .exclude(pk=pk)[:3]
+    )
+    return render(request, 'room_detail.html', {
+        'room': room,
+        'similar_rooms': similar_rooms,
+    })
+
