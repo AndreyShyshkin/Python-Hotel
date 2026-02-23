@@ -282,8 +282,7 @@
                                 </div>
                                 <div class="card-body p-4">
                                     <h5 class="card-title mb-2 fw-semibold">{{ room.title }}</h5>
-                                    <p class="card-text text-muted small mb-3">{{ room.description|truncatechars:90
-                                        }}</p>
+                                    <p class="card-text text-muted small mb-3">{{ room.description|truncatechars:120 }}</p>
                                     <div class="amenities d-flex flex-wrap gap-2 mb-3">
                                         {% with amenities=room.amenities.all %}
                                             {% for amenity in amenities|slice:":3" %}
