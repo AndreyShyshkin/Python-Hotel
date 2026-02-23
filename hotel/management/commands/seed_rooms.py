@@ -1,9 +1,19 @@
+"""
+Management command: seed_rooms
+Usage:
+    python manage.py seed_rooms          # create 5 rooms (skip if already exist)
+    python manage.py seed_rooms --reset  # wipe all rooms/categories/amenities first
+"""
+
 import shutil
 from pathlib import Path
+
 from django.conf import settings
 from django.core.management.base import BaseCommand
+
 from hotel.models import Amenity, Room, RoomCategory
 
+# ── static images that already live in the project ──────────────────────────
 STATIC_IMAGES_DIR = Path(settings.BASE_DIR) / 'static' / 'images'
 
 ROOMS_DATA = [
@@ -92,8 +102,9 @@ ALL_AMENITIES = [
 
 ALL_CATEGORIES = ['Стандарт', 'Люкс', 'Сюїт', 'Апартаменти']
 
+
 class Command(BaseCommand):
-    help = 'Seed the database with sample hotel rooms'
+    help = 'Seed the database with 5 sample hotel rooms'
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -108,34 +119,71 @@ class Command(BaseCommand):
             RoomCategory.objects.all().delete()
             Amenity.objects.all().delete()
             self.stdout.write(self.style.WARNING('🗑  Existing data wiped.'))
-            
+
+        # ── ensure media directory exists ──────────────────────────────────
         media_dir = Path(settings.MEDIA_ROOT) / 'rooms_images'
-            
+        media_dir.mkdir(parents=True, exist_ok=True)
+
+        # ── create amenities ───────────────────────────────────────────────
+        amenity_objs = {}
+        for name in ALL_AMENITIES:
+            obj, created = Amenity.objects.get_or_create(name=name)
+            amenity_objs[name] = obj
+            if created:
+                self.stdout.write(f'  ✅ Amenity: {name}')
+
+        # ── create categories ──────────────────────────────────────────────
         category_objs = {}
         for name in ALL_CATEGORIES:
-            obj, _ = RoomCategory.objects.get_or_create(name=name)
+            obj, created = RoomCategory.objects.get_or_create(name=name)
             category_objs[name] = obj
+            if created:
+                self.stdout.write(f'  ✅ Category: {name}')
 
-        
+        # ── create rooms ───────────────────────────────────────────────────
+        created_count = 0
         for data in ROOMS_DATA:
-            if not Room.objects.filter(title=data['title']).exists():
-                Room.objects.create(
-                    title=data['title'],
-                    description=data['description'],
-                    price=data['price'],
-                    capacity=data['capacity'],
-                    is_available=data['is_available'],
-                    category=category_objs[data['category']],
-                    image='' 
+            if Room.objects.filter(title=data['title']).exists():
+                self.stdout.write(
+                    self.style.WARNING(f'  ⚠️  Skipped (already exists): {data["title"]}')
                 )
-            
+                continue
+
+            # copy static image → media/rooms_images/
             src = STATIC_IMAGES_DIR / data['image_src']
             dest_filename = f'seed_{data["image_src"]}'
             dest = media_dir / dest_filename
+
             if src.exists():
-                shutil.copy2(src, dest) 
+                shutil.copy2(src, dest)
                 image_field_value = f'rooms_images/{dest_filename}'
             else:
+                self.stdout.write(
+                    self.style.WARNING(f'    ⚠️  Image not found: {src}, leaving blank')
+                )
                 image_field_value = ''
-        self.stdout.write(self.style.SUCCESS('Rooms created successfully!'))
-        
+
+            room = Room.objects.create(
+                title=data['title'],
+                description=data['description'],
+                price=data['price'],
+                capacity=data['capacity'],
+                is_available=data['is_available'],
+                category=category_objs[data['category']],
+                image=image_field_value,
+            )
+            room.amenities.set([amenity_objs[a] for a in data['amenities']])
+            created_count += 1
+            status = '🟢 available' if data['is_available'] else '🔴 occupied'
+            self.stdout.write(
+                self.style.SUCCESS(
+                    f'  🛏  Created: {room.title} | {room.price} ₴ | {status}'
+                )
+            )
+
+        self.stdout.write(
+            self.style.SUCCESS(
+                f'\n✨ Done! {created_count} room(s) created, '
+                f'{len(ROOMS_DATA) - created_count} skipped.'
+            )
+        )
