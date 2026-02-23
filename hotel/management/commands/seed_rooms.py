@@ -92,6 +92,23 @@ class Command(BaseCommand):
     help = 'Seed the database with sample hotel rooms'
 
     def handle(self, *args, **options):
-        self.stdout.write("Starting database seed...")
-        self.stdout.write(self.style.SUCCESS('Done!'))
+        
+        category_objs = {}
+        for name in ALL_CATEGORIES:
+            obj, _ = RoomCategory.objects.get_or_create(name=name)
+            category_objs[name] = obj
+
+        
+        for data in ROOMS_DATA:
+            if not Room.objects.filter(title=data['title']).exists():
+                Room.objects.create(
+                    title=data['title'],
+                    description=data['description'],
+                    price=data['price'],
+                    capacity=data['capacity'],
+                    is_available=data['is_available'],
+                    category=category_objs[data['category']],
+                    image='' 
+                )
+        self.stdout.write(self.style.SUCCESS('Rooms created successfully!'))
         
