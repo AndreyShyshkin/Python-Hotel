@@ -102,3 +102,23 @@ class RoomListViewTest(TestCase):
         response = self.client.get(reverse('room_list'), {'sort': 'price-desc'})
         prices = [room.price for room in response.context['rooms']]
         self.assertEqual(prices, sorted(prices, reverse=True))
+
+class RoomDetailViewTest(TestCase):
+    """Тест сторінки деталей номера"""
+
+    def setUp(self):
+        call_command('seed_rooms', stdout=StringIO())
+        self.client = Client()
+        self.room = Room.objects.first()
+
+    def test_room_detail_status_200(self):
+        response = self.client.get(reverse('room_detail', args=[self.room.pk]))
+        self.assertEqual(response.status_code, 200)
+
+    def test_room_detail_context(self):
+        response = self.client.get(reverse('room_detail', args=[self.room.pk]))
+        self.assertEqual(response.context['room'], self.room)
+
+    def test_room_detail_404(self):
+        response = self.client.get(reverse('room_detail', args=[99999]))
+        self.assertEqual(response.status_code, 404)
