@@ -92,3 +92,13 @@ class RoomListViewTest(TestCase):
         response = self.client.get(reverse('room_list'), {'search': 'Люкс'})
         for room in response.context['rooms']:
             self.assertIn('Люкс', room.title)
+
+    def test_sort_price_asc(self):
+        response = self.client.get(reverse('room_list'), {'sort': 'price-asc'})
+        prices = [room.price for room in response.context['rooms']]
+        self.assertEqual(prices, sorted(prices))
+
+    def test_sort_price_desc(self):
+        response = self.client.get(reverse('room_list'), {'sort': 'price-desc'})
+        prices = [room.price for room in response.context['rooms']]
+        self.assertEqual(prices, sorted(prices, reverse=True))
