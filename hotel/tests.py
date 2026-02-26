@@ -122,3 +122,9 @@ class RoomDetailViewTest(TestCase):
     def test_room_detail_404(self):
         response = self.client.get(reverse('room_detail', args=[99999]))
         self.assertEqual(response.status_code, 404)
+
+    def test_similar_rooms_same_category(self):
+        response = self.client.get(reverse('room_detail', args=[self.room.pk]))
+        for r in response.context['similar_rooms']:
+            self.assertEqual(r.category, self.room.category)
+            self.assertNotEqual(r.pk, self.room.pk)
