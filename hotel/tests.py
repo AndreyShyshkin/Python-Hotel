@@ -35,3 +35,18 @@ def test_seed_reset_flag(self):
         call_command('seed_rooms', stdout=StringIO())
         call_command('seed_rooms', '--reset', stdout=StringIO())
         self.assertEqual(Room.objects.count(), 5)
+
+def test_rooms_have_amenities(self):
+        call_command('seed_rooms', stdout=StringIO())
+        for room in Room.objects.all():
+            self.assertGreater(room.amenities.count(), 0, f'{room.title} has no amenities')
+
+def test_rooms_have_category(self):
+        call_command('seed_rooms', stdout=StringIO())
+        for room in Room.objects.all():
+            self.assertIsNotNone(room.category)
+
+def test_rooms_have_price(self):
+        call_command('seed_rooms', stdout=StringIO())
+        for room in Room.objects.all():
+            self.assertGreater(room.price, 0)
