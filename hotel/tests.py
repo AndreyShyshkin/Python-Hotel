@@ -50,3 +50,18 @@ def test_rooms_have_price(self):
         call_command('seed_rooms', stdout=StringIO())
         for room in Room.objects.all():
             self.assertGreater(room.price, 0)
+
+class RoomListViewTest(TestCase):
+    """Тест сторінки каталогу"""
+
+    def setUp(self):
+        call_command('seed_rooms', stdout=StringIO())
+        self.client = Client()
+
+    def test_room_list_status_200(self):
+        response = self.client.get(reverse('room_list'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_room_list_contains_rooms(self):
+        response = self.client.get(reverse('room_list'))
+        self.assertEqual(response.context['total'], 5)
