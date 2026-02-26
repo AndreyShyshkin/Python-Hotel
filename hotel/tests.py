@@ -76,3 +76,19 @@ class RoomListViewTest(TestCase):
         response = self.client.get(reverse('room_list'), {'available': 'on'})
         for room in response.context['rooms']:
             self.assertTrue(room.is_available)
+
+    def test_filter_by_price_range(self):
+        response = self.client.get(reverse('room_list'), {'price_min': 1000, 'price_max': 3000})
+        for room in response.context['rooms']:
+            self.assertGreaterEqual(room.price, 1000)
+            self.assertLessEqual(room.price, 3000)
+
+    def test_filter_by_capacity(self):
+        response = self.client.get(reverse('room_list'), {'capacity': 2})
+        for room in response.context['rooms']:
+            self.assertEqual(room.capacity, 2)
+
+    def test_search_filter(self):
+        response = self.client.get(reverse('room_list'), {'search': 'Люкс'})
+        for room in response.context['rooms']:
+            self.assertIn('Люкс', room.title)
