@@ -23,3 +23,15 @@ def test_seed_creates_categories(self):
 def test_seed_creates_amenities(self):
         call_command('seed_rooms', stdout=StringIO())
         self.assertGreaterEqual(Amenity.objects.count(), 1)
+
+def test_seed_is_idempotent(self):
+        """Повторний запуск не дублює номери"""
+        call_command('seed_rooms', stdout=StringIO())
+        call_command('seed_rooms', stdout=StringIO())
+        self.assertEqual(Room.objects.count(), 5)
+
+def test_seed_reset_flag(self):
+        """--reset очищає і пересіює"""
+        call_command('seed_rooms', stdout=StringIO())
+        call_command('seed_rooms', '--reset', stdout=StringIO())
+        self.assertEqual(Room.objects.count(), 5)
