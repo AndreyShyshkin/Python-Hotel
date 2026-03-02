@@ -157,11 +157,13 @@ class ObserverSubscriptionTest(TestCase):
         )
 
     def test_subscribe_requires_login(self):
+        url = reverse('subscribe_room', args=[self.room.pk])
         response = self.client.post(
-            reverse('subscribe_room', args=[self.room.pk]),
+            url,
             {'email': 'test@hotel.com'}
         )
-        self.assertNotEqual(response.status_code, 200)
+        login_url = reverse('login')
+        self.assertRedirects(response, f'{login_url}?next={url}')
         self.assertFalse(
             Subscription.objects.filter(user=self.user, room=self.room).exists()
         )
