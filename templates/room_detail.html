@@ -242,6 +242,45 @@
               +380 66 733 9999
             </a>
           </div>
+
+          <!-- ── Observer: Subscription block ── -->
+          <div class="mt-4 pt-3 border-top">
+            <h6 class="fw-semibold mb-2 d-flex align-items-center gap-2">
+              <svg width="18" height="18" class="text-primary"><use xlink:href="#calendar"></use></svg>
+              Сповіщення про доступність
+            </h6>
+            {% if user.is_authenticated %}
+              {% if is_subscribed %}
+                <p class="text-success small mb-2">✓ Ви підписані на цей номер</p>
+                <form method="post" action="{% url 'unsubscribe_room' room.pk %}">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-sm btn-outline-danger w-100 rounded-3">
+                    Відписатися від сповіщень
+                  </button>
+                </form>
+              {% else %}
+                <p class="text-muted small mb-2">Отримуйте сповіщення, коли статус номера зміниться.</p>
+                <form method="post" action="{% url 'subscribe_room' room.pk %}">
+                  {% csrf_token %}
+                  <div class="mb-2">
+                    <input type="email" name="email" class="form-control form-control-sm rounded-3"
+                           placeholder="Ваш email" value="{{ user.email }}" required>
+                  </div>
+                  <button type="submit" class="btn btn-sm btn-primary w-100 rounded-3">
+                    Підписатися на сповіщення
+                  </button>
+                </form>
+              {% endif %}
+              <a href="{% url 'my_subscriptions' %}" class="d-block text-center text-muted small mt-2">
+                Мої підписки →
+              </a>
+            {% else %}
+              <p class="text-muted small mb-2">Щоб підписатися на сповіщення, увійдіть в систему.</p>
+              <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-sm btn-outline-primary w-100 rounded-3">
+                Увійти
+              </a>
+            {% endif %}
+          </div>
         </div>
       </div><!-- /col-4 -->
 

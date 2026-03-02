@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- ── Hero ── -->
+<section class="position-relative overflow-hidden" style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); padding: 80px 0 60px;">
+  <div class="container-fluid padding-side">
+    <nav aria-label="breadcrumb" class="mb-3">
+      <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-white opacity-75">Головна</a></li>
+        <li class="breadcrumb-item active text-white" aria-current="page">Мої підписки</li>
+      </ol>
+    </nav>
+    <h1 class="display-3 fw-normal text-white mt-2 mb-0">
+      <svg width="36" height="36" class="text-primary me-3"><use xlink:href="#calendar"></use></svg>
+      Мої підписки
+    </h1>
+    <p class="text-white opacity-75 mt-2">Сповіщення про зміну доступності номерів (Патерн Спостерігач)</p>
+  </div>
+</section>
+
+<!-- ── Content ── -->
+<section class="padding-large pt-5">
+  <div class="container-fluid padding-side">
+
+    {% if not subscriptions %}
+      <div class="text-center py-5">
+        <svg width="64" height="64" class="text-muted mb-4"><use xlink:href="#calendar"></use></svg>
+        <h4 class="fw-normal text-muted">У вас поки немає підписок</h4>
+        <p class="text-muted mb-4">Підпишіться на номери, щоб отримувати сповіщення про зміну їх доступності.</p>
+        <a href="{% url 'room_list' %}" class="btn btn-primary btn-arrow">
+          <span>Переглянути номери <svg width="16" height="16"><use xlink:href="#arrow-right"></use></svg></span>
+        </a>
+      </div>
+    {% else %}
+      <div class="row g-4">
+        {% for sub in subscriptions %}
+        <div class="col-lg-6">
+          <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100">
+
+            <!-- Card header: room info + unsubscribe -->
+            <div class="card-header bg-transparent border-0 p-4 d-flex align-items-start justify-content-between gap-3">
+              <div class="d-flex align-items-center gap-3">
+                {% if sub.room.image %}
+                <img src="{{ sub.room.image.url }}" alt="{{ sub.room.title }}"
+                     class="rounded-3 flex-shrink-0" style="width:64px;height:64px;object-fit:cover;">
+                {% else %}
+                <div class="rounded-3 flex-shrink-0 bg-secondary d-flex align-items-center justify-content-center"
+                     style="width:64px;height:64px;">
+                  <svg width="28" height="28" class="text-muted"><use xlink:href="#armchair"></use></svg>
+                </div>
+                {% endif %}
+                <div>
+                  <h5 class="mb-1 fw-semibold">
+                    <a href="{% url 'room_detail' sub.room.pk %}" class="text-decoration-none text-dark">
+                      {{ sub.room.title }}
+                    </a>
+                  </h5>
+                  <span class="badge bg-primary rounded-pill px-2 py-1 small me-1">{{ sub.room.category.name }}</span>
+                  {% if sub.room.is_available %}
+                  <span class="badge bg-success rounded-pill px-2 py-1 small">Доступно</span>
+                  {% else %}
+                  <span class="badge bg-danger rounded-pill px-2 py-1 small">Зайнято</span>
+                  {% endif %}
+                  <div class="text-muted small mt-1">
+                    <svg width="13" height="13"><use xlink:href="#email"></use></svg>
+                    {{ sub.email }}
+                  </div>
+                  <div class="text-muted small">
+                    Підписано: {{ sub.created_at|date:"d.m.Y H:i" }}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Unsubscribe button -->
+              <form method="post" action="{% url 'unsubscribe_room' sub.room.pk %}" class="flex-shrink-0">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-outline-danger rounded-3"
+                        onclick="return confirm('Відписатися від «{{ sub.room.title }}»?')">
+                  Відписатися
+                </button>
+              </form>
+            </div>
+
+            <!-- Notification logs -->
+            <div class="card-body pt-0 px-4 pb-4">
+              {% with logs=sub.notifications.all %}
+              {% if logs %}
+              <h6 class="fw-semibold text-muted text-uppercase small mb-3 border-top pt-3">
+                Логи сповіщень ({{ logs|length }})
+              </h6>
+              <div class="sub-logs" style="max-height: 220px; overflow-y: auto;">
+                {% for log in logs %}
+                <div class="d-flex align-items-start gap-2 mb-2 p-2 rounded-3
+                  {% if log.is_available %}bg-success bg-opacity-10{% else %}bg-danger bg-opacity-10{% endif %}">
+                  <div class="flex-shrink-0 mt-1">
+                    {% if log.is_available %}
+                    <svg width="16" height="16" class="text-success"><use xlink:href="#wifi"></use></svg>
+                    {% else %}
+                    <svg width="16" height="16" class="text-danger"><use xlink:href="#clock"></use></svg>
+                    {% endif %}
+                  </div>
+                  <div class="flex-grow-1">
+                    <div class="small">{{ log.message }}</div>
+                    <div class="text-muted" style="font-size: 0.75rem;">
+                      {{ log.sent_at|date:"d.m.Y H:i:s" }}
+                    </div>
+                  </div>
+                  <span class="badge rounded-pill flex-shrink-0
+                    {% if log.is_available %}bg-success{% else %}bg-danger{% endif %}">
+                    {% if log.is_available %}Доступно{% else %}Зайнято{% endif %}
+                  </span>
+                </div>
+                {% endfor %}
+              </div>
+              {% else %}
+              <div class="border-top pt-3">
+                <p class="text-muted small mb-0">
+                  <svg width="14" height="14"><use xlink:href="#clock"></use></svg>
+                  Сповіщень ще не було. Ви отримаєте лог, коли статус номера зміниться.
+                </p>
+              </div>
+              {% endif %}
+              {% endwith %}
+            </div>
+
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Summary bar -->
+      <div class="mt-5 p-4 bg-secondary rounded-4 d-flex flex-wrap gap-4 align-items-center justify-content-between">
+        <div>
+          <span class="fw-semibold">Всього підписок:</span>
+          <span class="badge bg-primary rounded-pill ms-2">{{ subscriptions|length }}</span>
+        </div>
+        <a href="{% url 'room_list' %}" class="btn btn-arrow btn-primary">
+          <span>Підписатися на ще номер <svg width="16" height="16"><use xlink:href="#arrow-right"></use></svg></span>
+        </a>
+      </div>
+    {% endif %}
+
+  </div>
+</section>
+
+<style>
+  .sub-logs::-webkit-scrollbar { width: 4px; }
+  .sub-logs::-webkit-scrollbar-track { background: transparent; }
+  .sub-logs::-webkit-scrollbar-thumb { background: var(--bs-gray-400); border-radius: 4px; }
+</style>
+
+{% endblock %}
