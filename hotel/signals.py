@@ -8,9 +8,6 @@ from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 from .models import Room, Subscription, NotificationLog
 
-# Store previous availability state before save
-_previous_availability = {}
-
 
 @receiver(pre_save, sender=Room)
 def room_pre_save(sender, instance, **kwargs):
@@ -18,11 +15,26 @@ def room_pre_save(sender, instance, **kwargs):
     if instance.pk:
         try:
             old = Room.objects.get(pk=instance.pk)
-            _previous_availability[instance.pk] = old.is_available
+            instance._previous_is_available = old.is_available
         except Room.DoesNotExist:
-            _previous_availability[instance.pk] = None
+            instance._previous_is_available = None
     else:
-        _previous_availability[instance.pk] = None
+        # New instance; there is no previous availability in the database.
+        instance._previous_is_available = None
+
+
+@receiver(post_save, sender=Room)
+def room_pre_save(sender, instance, **kwargs):
+    """Capture the previous is_available value before the room is saved."""
+    if instance.pk:
+        try:
+            old = Room.objects.get(pk=instance.pk)
+            instance._previous_is_available = old.is_available
+        except Room.DoesNotExist:
+            instance._previous_is_available = None
+    else:
+        # New instance; there is no previous availability in the database.
+        instance._previous_is_available = None
 
 
 @receiver(post_save, sender=Room)
@@ -32,10 +44,9 @@ def room_post_save(sender, instance, created, **kwargs):
     If yes, notify all subscribed observers by logging a notification.
     """
     if created:
-        _previous_availability.pop(instance.pk, None)
         return
 
-    prev = _previous_availability.pop(instance.pk, None)
+    prev = getattr(instance, "_previous_is_available", None)
     if prev is None or prev == instance.is_available:
         return  # No change – do nothing
 
