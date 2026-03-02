@@ -88,7 +88,7 @@
               {% with logs=sub.notifications.all %}
               {% if logs %}
               <h6 class="fw-semibold text-muted text-uppercase small mb-3 border-top pt-3">
-                Логи сповіщень ({{ logs.count }})
+                Логи сповіщень ({{ logs|length }})
               </h6>
               <div class="sub-logs" style="max-height: 220px; overflow-y: auto;">
                 {% for log in logs %}
