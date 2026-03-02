@@ -1,6 +1,57 @@
-from django.shortcuts import render, get_object_or_404
-from .models import Room, RoomCategory, Amenity
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth import login, logout, authenticate
+from django.contrib import messages
+from django.views.decorators.http import require_POST
+from .models import Room, RoomCategory, Amenity, Subscription, NotificationLog
 
+
+# ── Auth Views ──────────────────────────────────────────────────────────────
+
+def register_view(request):
+    """Custom registration page."""
+    if request.user.is_authenticated:
+        return redirect('home')
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            messages.success(request, f'Ласкаво просимо, {user.username}! Реєстрація пройшла успішно.')
+            return redirect('home')
+    else:
+        form = UserCreationForm()
+    return render(request, 'auth/register.html', {'form': form})
+
+
+def login_view(request):
+    """Custom login page."""
+    if request.user.is_authenticated:
+        return redirect('home')
+    next_url = request.GET.get('next', '/')
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            messages.success(request, f'З поверненням, {user.username}!')
+            return redirect(request.POST.get('next', next_url) or '/')
+        else:
+            messages.error(request, 'Невірний логін або пароль.')
+    else:
+        form = AuthenticationForm()
+    return render(request, 'auth/login.html', {'form': form, 'next': next_url})
+
+
+def logout_view(request):
+    """Logout via POST."""
+    logout(request)
+    messages.info(request, 'Ви вийшли з системи.')
+    return redirect('home')
+
+
+# ── Hotel Views ──────────────────────────────────────────────────────────────
 
 def home(request):
     featured_rooms = (
@@ -117,8 +168,65 @@ def room_detail(request, pk):
         .filter(category=room.category)
         .exclude(pk=pk)[:3]
     )
+
+    is_subscribed = False
+    if request.user.is_authenticated:
+        is_subscribed = Subscription.objects.filter(user=request.user, room=room).exists()
+
     return render(request, 'room_detail.html', {
         'room': room,
         'similar_rooms': similar_rooms,
+        'is_subscribed': is_subscribed,
     })
+
+
+@login_required
+@require_POST
+def subscribe_room(request, pk):
+    """Observer: subscribe the current user to room availability changes."""
+    room = get_object_or_404(Room, pk=pk)
+    email = request.POST.get('email', '').strip()
+    if not email:
+        email = request.user.email
+
+    _, created = Subscription.objects.get_or_create(
+        user=request.user,
+        room=room,
+        defaults={'email': email},
+    )
+    if created:
+        messages.success(request, f'Ви підписалися на сповіщення про номер «{room.title}».')
+    else:
+        # Update email if provided
+        if email:
+            Subscription.objects.filter(user=request.user, room=room).update(email=email)
+        messages.info(request, 'Ви вже підписані на цей номер.')
+    return redirect('room_detail', pk=pk)
+
+
+@login_required
+@require_POST
+def unsubscribe_room(request, pk):
+    """Observer: unsubscribe the current user from room availability changes."""
+    room = get_object_or_404(Room, pk=pk)
+    deleted, _ = Subscription.objects.filter(user=request.user, room=room).delete()
+    if deleted:
+        messages.success(request, f'Ви відписалися від сповіщень про номер «{room.title}».')
+    else:
+        messages.info(request, 'Ви не були підписані на цей номер.')
+    return redirect('room_detail', pk=pk)
+
+
+@login_required
+def my_subscriptions(request):
+    """Show all subscriptions and notification logs for the current user."""
+    subscriptions = (
+        Subscription.objects
+        .filter(user=request.user)
+        .select_related('room', 'room__category')
+        .prefetch_related('notifications')
+        .order_by('-created_at')
+    )
+    return render(request, 'subscriptions.html', {'subscriptions': subscriptions})
+
 
