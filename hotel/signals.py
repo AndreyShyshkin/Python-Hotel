@@ -11,7 +11,7 @@ from .models import Room, Subscription, NotificationLog
 
 @receiver(pre_save, sender=Room)
 def room_pre_save(sender, instance, **kwargs):
-    """Capture the previous is_available value before the room is saved."""
+    """Capture the previous is_available value on the instance before saving."""
     if instance.pk:
         try:
             old = Room.objects.get(pk=instance.pk)
@@ -19,21 +19,6 @@ def room_pre_save(sender, instance, **kwargs):
         except Room.DoesNotExist:
             instance._previous_is_available = None
     else:
-        # New instance; there is no previous availability in the database.
-        instance._previous_is_available = None
-
-
-@receiver(post_save, sender=Room)
-def room_pre_save(sender, instance, **kwargs):
-    """Capture the previous is_available value before the room is saved."""
-    if instance.pk:
-        try:
-            old = Room.objects.get(pk=instance.pk)
-            instance._previous_is_available = old.is_available
-        except Room.DoesNotExist:
-            instance._previous_is_available = None
-    else:
-        # New instance; there is no previous availability in the database.
         instance._previous_is_available = None
 
 
@@ -41,12 +26,12 @@ def room_pre_save(sender, instance, **kwargs):
 def room_post_save(sender, instance, created, **kwargs):
     """
     After saving a room, check if availability changed.
-    If yes, notify all subscribed observers by logging a notification.
+    If yes, notify all subscribed observers by creating NotificationLog entries.
     """
     if created:
         return
 
-    prev = getattr(instance, "_previous_is_available", None)
+    prev = getattr(instance, '_previous_is_available', None)
     if prev is None or prev == instance.is_available:
         return  # No change – do nothing
 
