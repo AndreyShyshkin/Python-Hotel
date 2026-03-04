@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build-and-test:
+  test:
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -15,8 +15,35 @@ jobs:
       - name: Завантаження кода (Checkout)
         uses: actions/checkout@v4
 
+      - name: Налаштування Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Встановлення залежностей
+        run: pip install -r requirements.txt
+
+      - name: Запуск тестів (Pytest)
+        env:
+          DJANGO_DEBUG: "True"
+          DJANGO_SETTINGS_MODULE: config.settings
+        run: pytest hotel/
+
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: test
+
+    steps:
+      - name: Завантаження кода (Checkout)
+        uses: actions/checkout@v4
+
+      - name: Збірка Docker образу
+        run: docker compose build
+
       - name: Запуск контейнерів через Docker Compose
-        run: docker compose up -d --build
+        run: docker compose up -d
 
       - name: Очікування готовності сервера
         run: |
@@ -38,9 +65,6 @@ jobs:
             sleep 5
           done
           echo "Web service is ready."
-
-      - name: Запуск тестів (Pytest)
-        run: docker compose exec -e DJANGO_DEBUG=True -T web pytest hotel/
 
       - name: Очищення Docker ресурсів
         if: always()
