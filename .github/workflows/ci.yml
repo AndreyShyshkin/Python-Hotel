@@ -40,7 +40,7 @@ jobs:
           echo "Web service is ready."
 
       - name: Запуск тестів (Pytest)
-        run: docker compose exec -T web pytest
+        run: docker compose exec -e DJANGO_DEBUG=True -T web pytest hotel/
 
       - name: Очищення Docker ресурсів
         if: always()

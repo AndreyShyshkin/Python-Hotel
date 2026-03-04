@@ -9,25 +9,29 @@ https://docs.djangoproject.com/en/6.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
-
+import os
 from pathlib import Path
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
+# Load environment variables from .env file
+load_dotenv(BASE_DIR / '.env')
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-dd34goac+b!pm0*udv2(hcd@s!ixr(pwh2tuseps3+dqz12s)1'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-local-key')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# turn off debug mode in production
+DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
 
-# NOTE: This is suitable for local development only. Before deploying to production,
-# set ALLOWED_HOSTS to the list of valid host/domain names for this site.
-ALLOWED_HOSTS = ['*']
+# Allow all hosts during development, but specify allowed hosts in production
+ALLOWED_HOSTS = [
+    'python-hotel-prod-aba58c7bcc6c.herokuapp.com', 
+    'localhost',
+    '127.0.0.1'
+]
 
 # Application definition
 
