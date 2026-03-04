@@ -15,6 +15,10 @@ jobs:
       - name: Завантаження кода (Checkout)
         uses: actions/checkout@v4
 
+      - name: Generate CI Environment Variables
+        run: |
+          echo "DJANGO_DEBUG=True" >> .env
+
       - name: Запуск контейнерів через Docker Compose
         run: docker compose up -d --build
 
