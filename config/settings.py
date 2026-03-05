@@ -28,7 +28,7 @@ DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
 
 # Allow all hosts during development, but specify allowed hosts in production
 ALLOWED_HOSTS = [
-    'python-hotel-prod-aba58c7bcc6c.herokuapp.com', 
+    'python-hotel-b26529423c68.herokuapp.com',
     'localhost',
     '127.0.0.1'
 ]
