@@ -45,3 +45,19 @@ jobs:
       - name: Очищення Docker ресурсів
         if: always()
         run: docker compose down --volumes
+
+  deploy-to-heroku:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy to Heroku
+        uses: akhileshns/heroku-deploy@v3.13.15
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: "python-hotel-prod"
+          heroku_email: "shyshkinandrey06@gmail.com"
